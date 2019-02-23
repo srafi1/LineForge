@@ -13,17 +13,10 @@ type Point struct {
     myColor string
 }
 
-//default constructor, bland
 func (p Point) New() {
-    p.New(0, 0)
-    p.myString = " "
-}
-
-//overloaded constructor, takes coordinate values
-func (p Point) New(xIn float64, yIn float64) {
-    p.x = xIn
-    p.y = yIn
-    p.checkAxis()
+    p.checkAxis(-1)
+    p.myString = "O"
+    p.myColor = keyboard.WHITE
 }
 
 //toString prints myString with whatever color the point is.
@@ -31,45 +24,35 @@ func (p Point) String() string {
     return p.myColor + p.myString + keyboard.RESET
 }
 
-//determines if a point is on x or y axis and sets myString accordingly
-func (p Point) checkAxis() {
-    if p.x == 0 && p.y == 0 {
-        p.myString="+"
-    } else if p.x == 0 {
-        p.myString="|"
-    } else if p.y == 0 {
-        p.myString="-"
-    }
-    p.myColor = keyboard.WHITE
-}
-
 //makes myString blank
 func (p Point) reset() {
-    p.myString = " "
+    p.myString = "O"
     p.myColor = keyboard.WHITE
 }
 
 //this version of checkAxis does a "close enough" to axis sorta thing
 func (p Point) checkAxis(halfInc float64) {
+    if halfInc != -1 {
+        halfInc = 0.5
+    }
     nearX := p.x < halfInc && p.x > -1*halfInc
     nearY := p.y < halfInc && p.y > -1*halfInc
 
-    if (nearX && nearY) {
+    if nearX && nearY {
         p.myString = "+"
-    }
-    else if (nearX) {
+    } else if nearX {
         p.myString = "|"
-    }
-    else if (nearY) {
+    } else if nearY {
         p.myString = "-"
     }
+    p.myColor = keyboard.WHITE
 }
 
 //substitues its coordinates into a given equation and checks for equality
 func (p Point) subEq(eq string) bool {
-    eq = mathstring.sub(eq, "x", p.x)
-    eq = mathstring.sub(eq, "y", p.y)
-    return mathstring.isEqual(eq)
+    eq = mathstring.Sub(eq, "x", p.x)
+    eq = mathstring.Sub(eq, "y", p.y)
+    return mathstring.IsEqual(eq)
 }
 
 
@@ -103,9 +86,9 @@ func (p Point) setColor(graphNum int) {
 }
 
 //closeEnough but with colors
-func (p Point) closeEnoughColor(eq string, halfInc float64, graphNum int) {
+func (p Point) CloseEnoughColor(eq string, halfInc float64, graphNum int) {
     graphed := p.myString == "*"
-    p.myString = " "
+    p.myString = "O"
     p.closeEnough(eq, halfInc)
     if p.myString == "*" {
         p.setColor(graphNum)
@@ -124,7 +107,7 @@ func (p Point) closeEnough(eq string, halfInc float64) {
     divZeroIndex := strings.Index(center, "/0.0")
     var numNext bool
     if len(center) > divZeroIndex + 4 {
-        nextChar := center[divZeroIndex+4, divZeroIndex+5]
+        nextChar := center[divZeroIndex+4:divZeroIndex+5]
         numNext = strings.Index(mathstring.GetNumbers(), nextChar) != -1
     } else {
         numNext = false
@@ -139,21 +122,21 @@ func (p Point) closeEnough(eq string, halfInc float64) {
 
         p.setCor(origX + halfInc/2, origY + halfInc/2)
         p.closeEnough(eq, halfInc/2 - 0.01)
-        if !myString.equals("*") {
+        if p.myString != "*" {
             p.setCor(origX + halfInc/2, origY - halfInc/2)
             p.closeEnough(eq, halfInc/2 - 0.01)
         }
-        if !myString.equals("*") {
+        if p.myString != "*" {
             p.setCor(origX - halfInc/2, origY - halfInc/2)
             p.closeEnough(eq, halfInc/2 - 0.01)
         }
-        if !myString.equals("*") {
+        if p.myString != "*" {
             p.setCor(origX - halfInc/2, origY + halfInc/2)
             p.closeEnough(eq, halfInc/2 - 0.01)
         }
         p.setCor(origX, origY)
 
-        if !myString.equals("*") {
+        if p.myString != "*" {
             p.checkAxis(halfInc)
         }
 
@@ -163,42 +146,42 @@ func (p Point) closeEnough(eq string, halfInc float64) {
     positives := false
     negatives := false
 
-    if mathstring.isEqual(center) {
+    if mathstring.IsEqual(center) {
         p.myString = "*"
         return
     }
 
 
-    eq1 := mathstring.sub(eq, "x", p.x + halfInc)
-    eq1 = mathstring.sub(eq1, "y", p.y + halfInc)
-    if mathstring.subSides(eq1) == -1 {
+    eq1 := mathstring.Sub(eq, "x", p.x + halfInc)
+    eq1 = mathstring.Sub(eq1, "y", p.y + halfInc)
+    if mathstring.SubSides(eq1) == -1 {
         negatives = true
-    } else if (mathstring.subSides(eq1) == 1) {
+    } else if (mathstring.SubSides(eq1) == 1) {
         positives = true
     }
 
 
-    eq2 := mathstring.sub(eq, "x", p.x - halfInc)
-    eq2 = mathstring.sub(eq2, "y", p.y - halfInc)
-    if mathstring.subSides(eq2) == -1 {
+    eq2 := mathstring.Sub(eq, "x", p.x - halfInc)
+    eq2 = mathstring.Sub(eq2, "y", p.y - halfInc)
+    if mathstring.SubSides(eq2) == -1 {
         negatives = true
-    } else if mathstring.subSides(eq2) == 1 {
+    } else if mathstring.SubSides(eq2) == 1 {
         positives = true
     }
 
-    eq3 := mathstring.sub(eq, "x", p.x + halfInc)
-    eq3 = mathstring.sub(eq3, "y", p.y - halfInc)
-    if mathstring.subSides(eq3) == -1 {
+    eq3 := mathstring.Sub(eq, "x", p.x + halfInc)
+    eq3 = mathstring.Sub(eq3, "y", p.y - halfInc)
+    if mathstring.SubSides(eq3) == -1 {
         negatives = true
-    } else if mathstring.subSides(eq3) == 1 {
+    } else if mathstring.SubSides(eq3) == 1 {
         positives = true
     }
 
-    eq4 := mathstring.sub(eq, "x", p.x - halfInc)
-    eq4 = mathstring.sub(eq4, "y", p.y + halfInc)
-    if (mathstring.subSides(eq4) == -1) {
+    eq4 := mathstring.Sub(eq, "x", p.x - halfInc)
+    eq4 = mathstring.Sub(eq4, "y", p.y + halfInc)
+    if (mathstring.SubSides(eq4) == -1) {
         negatives = true
-    } else if (mathstring.subSides(eq4) == 1) {
+    } else if (mathstring.SubSides(eq4) == 1) {
         positives = true
     }
 
@@ -206,7 +189,7 @@ func (p Point) closeEnough(eq string, halfInc float64) {
     if (positives && negatives) {
         p.myString = "*"
     } else {
-        checkAxis(halfInc)
+        p.checkAxis(halfInc)
     }
 }
 
@@ -218,7 +201,7 @@ func (p Point) setCor(X float64, Y float64) {
 
 //accessor method for x and y coordinates
 func (p Point) GetCor() []float64 {
-    coords := {x, y}
+    coords := []float64{p.x, p.y}
     return coords
 }
 
@@ -226,5 +209,5 @@ func (p Point) GetCor() []float64 {
 func (p Point) Translate(dx float64, dy float64) {
     p.x += dx
     p.y += dy
-    p.checkAxis()
+    p.checkAxis(-1)
 }

@@ -4,6 +4,8 @@ import (
     "fmt"
     "os"
     "bufio"
+    "io"
+    "strings"
     "mathstring"
     "graph"
     "keyboard"
@@ -15,7 +17,8 @@ func main() {
     fmt.Println()
 
     in := bufio.NewReader(os.Stdin)
-    graph := graph.AxisGraph.New()
+    var graph graph.AxisGraph
+    graph.New()
 
     var helpText string = ""
     helpText += "help -- displays this help text\n"
@@ -49,7 +52,6 @@ func main() {
 
 
     var graphMode bool = false
-    var eq string = ""
     var highVal float64 = 10
     var totaldx float64 = 0
     var totaldy float64 = 0
@@ -58,13 +60,16 @@ func main() {
 
     for {
         fmt.Printf("What to do...? (input 'help' for help or 'quit' to exit)\n> ")
-        var input string = ""
-        input, err = in.ReadString('\n')
+        input, err := in.ReadString('\n')
         if err != nil {
-            fmt.Println("Bad input")
-            continue
+            if err == io.EOF {
+                break
+            } else {
+                fmt.Println("Bad input")
+                continue
+            }
         }
-        input = fixInput(input)
+        input = strings.TrimSuffix(fixInput(input), "\n")
 
         if strings.Index(input, "[x]") != -1 && (strings.Contains(falpha, input[strings.Index(input, "[x]")-1:strings.Index(input, "[x]")])) && (strings.Index(input, "y") != -1) {
             input = graph.Function(input)
@@ -90,7 +95,7 @@ func main() {
             }
         } else if graphMode && strings.Index(input, "translate") == 0 {
             //translate
-            var params String = input.substring(10)
+            var params string = input[10:]
             var coords []string = strings.Split(params, " ")
             var dx float64 = mathstring.NotateToDouble(coords[0])
             var dy float64 = mathstring.NotateToDouble(coords[1])
@@ -113,7 +118,7 @@ func main() {
             fmt.Printf("%v", graph)
         } else if input == "status" {
             fmt.Println("Equations: ")
-            graphs := graph.GetGraphs()
+            graphs := graph.Graphs
             var myColor string = ""
             for i := 0; i < len(graphs); i++ {
                 switch (i%7) {
@@ -136,8 +141,8 @@ func main() {
                 fmt.Print(graphs[i])
                 fmt.Println(keyboard.RESET)
             }
-            fmt.Println("Zoom level: " + highVal)
-            fmt.Println("Total translations: " + totaldx + " " + totaldy)
+            fmt.Printf("Zoom level: %f\n", highVal)
+            fmt.Printf("Total translations: %f %f\n", totaldx, totaldy)
         } else if input == "clear" {
             graph.Clear()
             fmt.Println("Graph cleared!")
@@ -147,35 +152,36 @@ func main() {
             graph.Store(input)
             if strings.Index(input, "[x]") != -1 && (strings.Contains(falpha, input[strings.Index(input, "[x]")-1:strings.Index(input, "[x]")])) {
                 input = graph.Function(input)
-                input = input[0:input.indexOf("=")]
+                input = input[0:strings.Index(input, "=")]
             }
 
-            graph.GraphAll("y = " + input)
+            graph.Graphs = append(graph.Graphs, "y = " + input)
+            graph.GraphAll()
 
             fmt.Println(graph)
             if !graphMode {
                 graphMode = true
                 fmt.Println("Now you can use the 'zoom [scale]' and 'translate [x] [y]' commands")
-            } else if graph.GetGraphs().size() > 1 {
+            } else if len(graph.Graphs) > 1 {
                 fmt.Println("Use 'clear' empty the graph")
-            } else if graph.GetGraphs().size() > 3 {
+            } else if len(graph.Graphs) > 3 {
                 fmt.Println("You can store functions using the format 'f(x)=...' for later use")
             }
         } else if strings.Index(input, "=") != -1 && (strings.Index(input, "y") != -1 || strings.Index(input, "x") != -1) {
             if strings.Contains(input, "x") && strings.Contains(input, "x") {
-                input = input.replace("X","x")
-                input = input.replace("Y","y")
+                input = strings.Replace(input, "X", "x", 1)
+                input = strings.Replace(input, "Y", "y", 1)
 
-                eq = input
-                graph.graphAll(input)
+                graph.Graphs = append(graph.Graphs, input)
+                graph.GraphAll()
 
                 fmt.Println(graph)
                 if (!graphMode) {
                     graphMode = true
                     fmt.Println("Now you can use the 'zoom [scale]' and 'translate [x] [y]' commands")
-                } else if (graph.getGraphs().size() > 3) {
+                } else if len(graph.Graphs) > 3 {
                     fmt.Println("You can store functions using the format 'f(x)=...' for later use")
-                } else if (graph.getGraphs().size() > 1) {
+                } else if len(graph.Graphs) > 1 {
                     fmt.Println("Use 'clear' empty the graph")
                 }
             } else {
@@ -188,15 +194,15 @@ func main() {
     }
 }
 
-func fixInput(string input) string {
+func fixInput(input string) string {
     var index int = -1
     var nums string = mathstring.GetNumbers()+"xy"
 
-    for strings.Index(input, "-", index + 1) != -1 {
-        index = strings.Index(input[index + 1], "-")
-        if index == 0 || strings.Index(nums, input[index-1]) == -1 {
+    for strings.Index(input[index + 1:], "-") != -1 {
+        index = strings.Index(input[index + 1:], "-")
+        if index == 0 || strings.Index(nums, input[index-1:]) == -1 {
             if len(input) > index {
-                input = input.substring(0, index) + "~" + input.substring(index+1)
+                input = input[0:index] + "~" + input[index+1:]
             } else {
                 input = input[0:index]
             }
@@ -207,7 +213,7 @@ func fixInput(string input) string {
     for strings.Index(input[index + 1:], "(") != -1 {
         index = strings.Index(input[index + 1:], "(")
         var clos int = mathstring.FindClosingParen(input, index)
-        if index > 0 && strings.Index(nums+"-+/*", input[index - 1]) == -1 {
+        if index > 0 && strings.Index(nums+"-+/*", input[index - 1:]) == -1 {
             if (len(input) > index) {
                 input = input[0:index] + "[" + input[index+1:]
             } else {
