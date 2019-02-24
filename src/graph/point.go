@@ -13,25 +13,25 @@ type Point struct {
     myColor string
 }
 
-func (p Point) New() {
+func (p *Point) New() {
     p.checkAxis(-1)
-    p.myString = "O"
+    p.myString = " "
     p.myColor = keyboard.WHITE
 }
 
 //toString prints myString with whatever color the point is.
-func (p Point) String() string {
+func (p *Point) String() string {
     return p.myColor + p.myString + keyboard.RESET
 }
 
 //makes myString blank
-func (p Point) reset() {
-    p.myString = "O"
+func (p *Point) reset() {
+    p.myString = " "
     p.myColor = keyboard.WHITE
 }
 
 //this version of checkAxis does a "close enough" to axis sorta thing
-func (p Point) checkAxis(halfInc float64) {
+func (p *Point) checkAxis(halfInc float64) {
     if halfInc != -1 {
         halfInc = 0.5
     }
@@ -49,7 +49,7 @@ func (p Point) checkAxis(halfInc float64) {
 }
 
 //substitues its coordinates into a given equation and checks for equality
-func (p Point) subEq(eq string) bool {
+func (p *Point) subEq(eq string) bool {
     eq = mathstring.Sub(eq, "x", p.x)
     eq = mathstring.Sub(eq, "y", p.y)
     return mathstring.IsEqual(eq)
@@ -57,7 +57,7 @@ func (p Point) subEq(eq string) bool {
 
 
 //sets myColor variable using ANSI codes
-func (p Point) setColor(graphNum int) {
+func (p *Point) setColor(graphNum int) {
     graphNum = graphNum % 7
 
     switch graphNum {
@@ -86,9 +86,9 @@ func (p Point) setColor(graphNum int) {
 }
 
 //closeEnough but with colors
-func (p Point) CloseEnoughColor(eq string, halfInc float64, graphNum int) {
+func (p *Point) CloseEnoughColor(eq string, halfInc float64, graphNum int) {
     graphed := p.myString == "*"
-    p.myString = "O"
+    p.myString = " "
     p.closeEnough(eq, halfInc)
     if p.myString == "*" {
         p.setColor(graphNum)
@@ -98,7 +98,7 @@ func (p Point) CloseEnoughColor(eq string, halfInc float64, graphNum int) {
 }
 
 //long and complicated algorithm that determines whether or not a point is close enough to the curve of a graph
-func (p Point) closeEnough(eq string, halfInc float64) {
+func (p *Point) closeEnough(eq string, halfInc float64) {
     center := mathstring.Sub(eq, "x", p.x)
     center = mathstring.Sub(center, "y", p.y)
 
@@ -194,19 +194,23 @@ func (p Point) closeEnough(eq string, halfInc float64) {
 }
 
 //mutator method for x and y coordinates
-func (p Point) setCor(X float64, Y float64) {
+func (p *Point) setCor(X float64, Y float64) {
     p.x = X
     p.y = Y
 }
 
 //accessor method for x and y coordinates
-func (p Point) GetCor() []float64 {
+func (p *Point) GetCor() []float64 {
     coords := []float64{p.x, p.y}
     return coords
 }
 
+func (p *Point) GetString() string {
+    return p.myString
+}
+
 //moves a point a certain distance
-func (p Point) Translate(dx float64, dy float64) {
+func (p *Point) Translate(dx float64, dy float64) {
     p.x += dx
     p.y += dy
     p.checkAxis(-1)

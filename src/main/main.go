@@ -88,7 +88,7 @@ func main() {
                 graph.Translate(totaldx, totaldy)
                 graph.GraphAll()
                 highVal = scale
-                fmt.Println(graph)
+                fmt.Println(graph.String())
                 fmt.Println("Use 'status' to see the equations, zoom level, and translations")
             } else {
                 fmt.Println("Scale must be greater than 0")
@@ -108,6 +108,10 @@ func main() {
 
             fmt.Printf("%v", graph)
             fmt.Println("Use 'status' to see the equations, zoom level, and translations")
+        } else if graphMode && strings.Index(input, "debug") == 0 {
+            var x, y int
+            fmt.Sscan(input, "debug %i %i", &x, &y)
+            fmt.Printf("'%v'\n", graph.Plane[y][x].String())
         } else if graphMode && strings.Index(input, "reset") == 0 {
             graph.Translate(-1*totaldx, -1*totaldy)
             graph.Zoom(10)
@@ -115,7 +119,7 @@ func main() {
             totaldx = 0
             totaldy = 0
             highVal = 10
-            fmt.Printf("%v", graph)
+            fmt.Printf("%s", graph.String())
         } else if input == "status" {
             fmt.Println("Equations: ")
             graphs := graph.Graphs
@@ -158,7 +162,7 @@ func main() {
             graph.Graphs = append(graph.Graphs, "y = " + input)
             graph.GraphAll()
 
-            fmt.Println(graph)
+            fmt.Println(graph.String())
             if !graphMode {
                 graphMode = true
                 fmt.Println("Now you can use the 'zoom [scale]' and 'translate [x] [y]' commands")
@@ -167,7 +171,7 @@ func main() {
             } else if len(graph.Graphs) > 3 {
                 fmt.Println("You can store functions using the format 'f(x)=...' for later use")
             }
-        } else if strings.Index(input, "=") != -1 && (strings.Index(input, "y") != -1 || strings.Index(input, "x") != -1) {
+        } else if strings.Contains(input, "=") && (strings.Contains(input, "y") || strings.Contains(input, "x")) {
             if strings.Contains(input, "x") && strings.Contains(input, "x") {
                 input = strings.Replace(input, "X", "x", 1)
                 input = strings.Replace(input, "Y", "y", 1)
@@ -175,7 +179,7 @@ func main() {
                 graph.Graphs = append(graph.Graphs, input)
                 graph.GraphAll()
 
-                fmt.Println(graph)
+                fmt.Println(graph.String())
                 if (!graphMode) {
                     graphMode = true
                     fmt.Println("Now you can use the 'zoom [scale]' and 'translate [x] [y]' commands")
