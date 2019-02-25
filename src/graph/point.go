@@ -1,7 +1,6 @@
 package graph
 
 import (
-    //"fmt"
     "strings"
     "keyboard"
     "mathstring"
@@ -45,7 +44,6 @@ func (p *Point) checkAxis(halfInc float64) {
     } else if nearY {
         p.myString = "-"
     }
-    p.myColor = keyboard.WHITE
 }
 
 //substitues its coordinates into a given equation and checks for equality
