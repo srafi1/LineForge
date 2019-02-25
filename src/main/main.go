@@ -172,24 +172,20 @@ func main() {
                 fmt.Println("You can store functions using the format 'f(x)=...' for later use")
             }
         } else if strings.Contains(input, "=") && (strings.Contains(input, "y") || strings.Contains(input, "x")) {
-            if strings.Contains(input, "x") && strings.Contains(input, "x") {
-                input = strings.Replace(input, "X", "x", 1)
-                input = strings.Replace(input, "Y", "y", 1)
+            input = strings.Replace(input, "X", "x", 1)
+            input = strings.Replace(input, "Y", "y", 1)
 
-                graph.Graphs = append(graph.Graphs, input)
-                graph.GraphAll()
+            graph.Graphs = append(graph.Graphs, input)
+            graph.GraphAll()
 
-                fmt.Println(graph.String())
-                if (!graphMode) {
-                    graphMode = true
-                    fmt.Println("Now you can use the 'zoom [scale]' and 'translate [x] [y]' commands")
-                } else if len(graph.Graphs) > 3 {
-                    fmt.Println("You can store functions using the format 'f(x)=...' for later use")
-                } else if len(graph.Graphs) > 1 {
-                    fmt.Println("Use 'clear' empty the graph")
-                }
-            } else {
-                fmt.Println("Please include x and y in your equation to be graphed")
+            fmt.Println(graph.String())
+            if (!graphMode) {
+                graphMode = true
+                fmt.Println("Now you can use the 'zoom [scale]' and 'translate [x] [y]' commands")
+            } else if len(graph.Graphs) > 3 {
+                fmt.Println("You can store functions using the format 'f(x)=...' for later use")
+            } else if len(graph.Graphs) > 1 {
+                fmt.Println("Use 'clear' empty the graph")
             }
         } else {
             fmt.Println(strings.Replace(mathstring.Pemdas(input), "~", "-", 1))

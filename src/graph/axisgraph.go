@@ -42,11 +42,6 @@ func (graph *AxisGraph) Zoom(highVal float64) {
         for x := 0; x < len(graph.Plane); x++ {
             xVal := (-1*highVal) + (float64(x)*increment)
             graph.Plane[y][x].setCor(xVal,yVal)
-            /*
-            if Graphs.size() != 0 {
-                reGraphAll()
-            }
-            */
         }
     }
     graph.Refresh()
@@ -55,9 +50,9 @@ func (graph *AxisGraph) Zoom(highVal float64) {
 
 //runs Point.translate(double,double) on all points, moving the entire graph.
 func (graph *AxisGraph) Translate(dx float64, dy float64) {
-    for _, row := range graph.Plane {
-        for _, p := range row {
-            p.Translate(dx, dy)
+    for i, _ := range graph.Plane {
+        for j, _ := range graph.Plane[i] {
+            graph.Plane[i][j].Translate(dx, dy)
         }
     }
     graph.Refresh()
@@ -65,7 +60,7 @@ func (graph *AxisGraph) Translate(dx float64, dy float64) {
 
 //runa closeEnough on all the Points, forming a graph
 func (graph *AxisGraph) Graph(eq string, num int) {
-    increment :=  graph.highest / float64((len(graph.Plane) - 1) / 2.0)
+    increment :=  graph.highest / float64((len(graph.Plane) - 1) / 2)
     for i, _ := range graph.Plane {
         for j, _ := range graph.Plane[i] {
             graph.Plane[i][j].CloseEnoughColor(eq, increment / 2.0, num)
@@ -81,10 +76,10 @@ func (graph *AxisGraph) GraphAll() {
 
 //runs reset() on all Points
 func (graph *AxisGraph) Refresh() {
-    for _, row := range graph.Plane {
-        for _, p := range row {
-            p.reset()
-            p.checkAxis(-1)
+    for i, _ := range graph.Plane {
+        for j, _ := range graph.Plane[i] {
+            graph.Plane[i][j].reset()
+            graph.Plane[i][j].checkAxis(-1)
         }
     }
 }

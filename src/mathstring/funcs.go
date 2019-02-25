@@ -12,7 +12,7 @@ var numbers string = "1234567890.~"
 
 //converts a doubleString such as "-3.0" to the "~" standard
 func NegativeNotate(negNum string) string {
-    if negNum[0:1] == "-" {
+    if negNum[0] == '-' {
         return "~" + negNum[1:]
     } else {
         return negNum
@@ -64,8 +64,8 @@ func SimpleMultiply(exp string) string {
 //simpleAdd but with DIVISION!!!
 func SimpleDivide(exp string) string {
     var index int = strings.Index(exp, "/")
-    var arg1 string = exp[index + 1:]
-    var arg2 string = exp[0:index]
+    var arg1 string = exp[:index]
+    var arg2 string = exp[index + 1:]
     val1 := NotateToDouble(arg1)
     val2 := NotateToDouble(arg2)
     return NegativeNotate(fmt.Sprintf("%f", val1 / val2))
@@ -74,8 +74,8 @@ func SimpleDivide(exp string) string {
 //simpleAdd but with POWERS!!!
 func SimplePower(exp string) string {
     var index int = strings.Index(exp, "^")
-    var arg1 string = exp[index + 1:]
-    var arg2 string = exp[0:index]
+    var arg1 string = exp[:index]
+    var arg2 string = exp[index + 1:]
     val1 := NotateToDouble(arg1)
     val2 := NotateToDouble(arg2)
     return NegativeNotate(fmt.Sprintf("%f", math.Pow(val1, val2)))
@@ -428,10 +428,12 @@ func DivZeroExp(exp string) bool {
 
 //finds closing paren: helper method
 func FindClosingParen(exp string, open int) int {
+    fmt.Printf("FindClosingParen: exp %s open %d\n", exp, open)
     var clos int = open
     var counter int = 1
     for counter > 0 {
         clos++
+        fmt.Printf("index: %d counter: %d\n", clos, counter)
         var next byte = exp[clos]
 
         if next == '(' {

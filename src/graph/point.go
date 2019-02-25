@@ -1,6 +1,7 @@
 package graph
 
 import (
+    //"fmt"
     "strings"
     "keyboard"
     "mathstring"
@@ -16,7 +17,6 @@ type Point struct {
 func (p *Point) New() {
     p.checkAxis(-1)
     p.myString = " "
-    p.myColor = keyboard.WHITE
 }
 
 //toString prints myString with whatever color the point is.
@@ -92,6 +92,7 @@ func (p *Point) CloseEnoughColor(eq string, halfInc float64, graphNum int) {
     p.closeEnough(eq, halfInc)
     if p.myString == "*" {
         p.setColor(graphNum)
+        //fmt.Printf("CloseEnoughColor(): loc %f %f graphNum %d color %s\n", p.x, p.y, graphNum, p.myColor[1:]);
     } else if graphed {
         p.myString = "*"
     }
