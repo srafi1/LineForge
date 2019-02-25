@@ -199,7 +199,7 @@ func fixInput(input string) string {
     var nums string = mathstring.GetNumbers()+"xy"
 
     for strings.Index(input[index + 1:], "-") != -1 {
-        index = strings.Index(input[index + 1:], "-")
+        index = strings.Index(input[index + 1:], "-") + index + 1
         if index == 0 || strings.Index(nums, input[index-1:]) == -1 {
             if len(input) > index {
                 input = input[0:index] + "~" + input[index+1:]
@@ -211,7 +211,7 @@ func fixInput(input string) string {
 
     index = 0
     for strings.Index(input[index + 1:], "(") != -1 {
-        index = strings.Index(input[index + 1:], "(")
+        index = strings.Index(input[index + 1:], "(") + index + 1
         var clos int = mathstring.FindClosingParen(input, index)
         if index > 0 && strings.Index(nums+"-+/*", input[index - 1:]) == -1 {
             if (len(input) > index) {

@@ -428,12 +428,10 @@ func DivZeroExp(exp string) bool {
 
 //finds closing paren: helper method
 func FindClosingParen(exp string, open int) int {
-    fmt.Printf("FindClosingParen: exp %s open %d\n", exp, open)
     var clos int = open
     var counter int = 1
     for counter > 0 {
         clos++
-        fmt.Printf("index: %d counter: %d\n", clos, counter)
         var next byte = exp[clos]
 
         if next == '(' {
