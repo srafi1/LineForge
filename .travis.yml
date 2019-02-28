@@ -1,1 +1,2 @@
 language: go
+script: GOPATH=$(pwd) && go run main
