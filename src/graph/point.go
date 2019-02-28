@@ -31,9 +31,6 @@ func (p *Point) reset() {
 
 //this version of checkAxis does a "close enough" to axis sorta thing
 func (p *Point) checkAxis(halfInc float64) {
-    if halfInc != -1 {
-        halfInc = 0.5
-    }
     nearX := p.x < halfInc && p.x > -1*halfInc
     nearY := p.y < halfInc && p.y > -1*halfInc
 
@@ -90,7 +87,6 @@ func (p *Point) CloseEnoughColor(eq string, halfInc float64, graphNum int) {
     p.closeEnough(eq, halfInc)
     if p.myString == "*" {
         p.setColor(graphNum)
-        //fmt.Printf("CloseEnoughColor(): loc %f %f graphNum %d color %s\n", p.x, p.y, graphNum, p.myColor[1:]);
     } else if graphed {
         p.myString = "*"
     }

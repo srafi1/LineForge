@@ -104,11 +104,11 @@ func (graph *AxisGraph) Store(eq string) {
 
 //takes the function name, matches it with its corresponding place in storage, and returns the expression that was stored.
 func (graph *AxisGraph) Function(input string) string {
-    input = strings.Replace(input, " ", "", 1)
+    input = strings.Replace(input, " ", "", -1)
     for strings.Index(input, "[x]") != -1 {
         variable := graph.findname(input)
         replaced := input[strings.Index(input, "[x]")-1:strings.Index(input, "[x]")+3]
-        input = strings.Replace(input, replaced, graph.findexp(variable), 1)
+        input = strings.Replace(input, replaced, graph.findexp(variable), -1)
     }
     return input
 }

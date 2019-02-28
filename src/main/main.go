@@ -151,8 +151,8 @@ func main() {
             graph.Clear()
             fmt.Println("Graph cleared!")
         } else if strings.Index(input, "[x]") != -1 && strings.Index(input, "] =") != -1 || strings.Index(input, "]=") != -1 && strings.Index(input, "=") != -1 {
-            input = strings.Replace(input, "X", "x", 1)
-            input = strings.Replace(input, "Y", "y", 1)
+            input = strings.Replace(input, "X", "x", -1)
+            input = strings.Replace(input, "Y", "y", -1)
             graph.Store(input)
             if strings.Index(input, "[x]") != -1 && (strings.Contains(falpha, input[strings.Index(input, "[x]")-1:strings.Index(input, "[x]")])) {
                 input = graph.Function(input)
@@ -172,8 +172,8 @@ func main() {
                 fmt.Println("You can store functions using the format 'f(x)=...' for later use")
             }
         } else if strings.Contains(input, "=") && (strings.Contains(input, "y") || strings.Contains(input, "x")) {
-            input = strings.Replace(input, "X", "x", 1)
-            input = strings.Replace(input, "Y", "y", 1)
+            input = strings.Replace(input, "X", "x", -1)
+            input = strings.Replace(input, "Y", "y", -1)
 
             graph.Graphs = append(graph.Graphs, input)
             graph.GraphAll()
@@ -188,7 +188,7 @@ func main() {
                 fmt.Println("Use 'clear' empty the graph")
             }
         } else {
-            fmt.Println(strings.Replace(mathstring.Pemdas(input), "~", "-", 1))
+            fmt.Println(strings.Replace(mathstring.Pemdas(input), "~", "-", -1))
         }
         fmt.Println()
     }
@@ -200,7 +200,7 @@ func fixInput(input string) string {
 
     for strings.Index(input[index + 1:], "-") != -1 {
         index = strings.Index(input[index + 1:], "-") + index + 1
-        if index == 0 || strings.Index(nums, input[index-1:]) == -1 {
+        if index == 0 || strings.IndexByte(nums, input[index-1]) == -1 {
             if len(input) > index {
                 input = input[0:index] + "~" + input[index+1:]
             } else {
@@ -213,7 +213,7 @@ func fixInput(input string) string {
     for strings.Index(input[index + 1:], "(") != -1 {
         index = strings.Index(input[index + 1:], "(") + index + 1
         var clos int = mathstring.FindClosingParen(input, index)
-        if index > 0 && strings.Index(nums+"-+/*", input[index - 1:]) == -1 {
+        if index > 0 && strings.IndexByte(nums+"-+/*", input[index - 1]) == -1 {
             if (len(input) > index) {
                 input = input[0:index] + "[" + input[index+1:]
             } else {

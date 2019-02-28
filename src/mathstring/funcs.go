@@ -34,8 +34,8 @@ func NotateToDouble(negNum string) float64 {
 //performs a simple addition of a string (Eg: "5+4") and returns string representation of answer.
 func SimpleAdd(exp string) string {
     index := strings.Index(exp, "+")
-    var arg1 string = exp[index + 1:]
-    var arg2 string = exp[0:index]
+    var arg1 string = exp[:index]
+    var arg2 string = exp[index + 1:]
     val1 := NotateToDouble(arg1)
     val2 := NotateToDouble(arg2)
     return NegativeNotate(fmt.Sprintf("%f", val1 + val2))
@@ -44,8 +44,8 @@ func SimpleAdd(exp string) string {
 //simpleAdd but with SUBTRACTION!!!
 func SimpleSubtract(exp string) string {
     var index int = strings.Index(exp, "-")
-    var arg1 string = exp[index + 1:]
-    var arg2 string = exp[0:index]
+    var arg1 string = exp[:index]
+    var arg2 string = exp[index + 1:]
     val1 := NotateToDouble(arg1)
     val2 := NotateToDouble(arg2)
     return NegativeNotate(fmt.Sprintf("%f", val1 - val2))
@@ -54,8 +54,8 @@ func SimpleSubtract(exp string) string {
 //simpleAdd but with MULTIPLICATION!!!
 func SimpleMultiply(exp string) string {
     var index int = strings.Index(exp, "*")
-    var arg1 string = exp[index + 1:]
-    var arg2 string = exp[0:index]
+    var arg1 string = exp[:index]
+    var arg2 string = exp[index + 1:]
     val1 := NotateToDouble(arg1)
     val2 := NotateToDouble(arg2)
     return NegativeNotate(fmt.Sprintf("%f", val1 * val2))
@@ -201,7 +201,7 @@ func MultiplyLtoR(exp string) string {
 
 //addLtoR but with POWERS!!!
 func PowerLtoR(exp string) string {
-    if strings.Index(exp, "^") != -1 {
+    if strings.Contains(exp, "^") {
         var opIndex int = strings.Index(exp, "^")
 
         var start int = 0
@@ -210,9 +210,9 @@ func PowerLtoR(exp string) string {
         //Finds end index of simple string
         var dotsEnd int = 0
         for x := opIndex + 1; x < len(exp); x++ {
-            if strings.Index(numbers, exp[x:x+1]) != -1 {
+            if strings.IndexByte(numbers, exp[x]) != -1 {
                 end = x + 1
-                if exp[x:x+1] == "." {
+                if exp[x] == '.' {
                     dotsEnd ++
                 }
                 if dotsEnd > 1 {
@@ -227,15 +227,14 @@ func PowerLtoR(exp string) string {
         //Finds start index of simple string
         var dotsStart int = 0
         for x := opIndex - 1; x > 0; x-- {
-            if strings.Index(numbers, exp[x-1:x]) != -1 {
+            if strings.Contains(numbers, exp[x-1:x]) {
                 start = x-1
-                if exp[x:x+1] == "." {
+                if exp[x] == '.' {
                     dotsStart ++
                 }
                 if dotsStart > 1 {
                     return "NO MORE DOTS"
                 }
-
             } else {
                 start = x
                 break
@@ -243,7 +242,7 @@ func PowerLtoR(exp string) string {
         }
 
         var simpleExp string = exp[start:end]
-        var before string = exp[0:start]
+        var before string = exp[:start]
         var after string = exp[end:]
 
         return PowerLtoR(before + SimplePower(simpleExp) + after)
@@ -255,26 +254,29 @@ func PowerLtoR(exp string) string {
 
 //Handles parentheses in a string.
 func EvaluateParens(exp string)  string {
-    exp = strings.Replace(exp, "~(", "~1(", 1)
-    for strings.Index(exp, "(") != -1 {
-        var openParen int = strings.Index(exp, "(")
-        var nextParen int = strings.Index(exp[openParen+1:], "(")
+    exp = strings.Replace(exp, "~(", "~1(", -1)
+    for strings.Contains(exp, "(") {
+        openParen := strings.Index(exp, "(")
+        closeParen := FindClosingParen(exp, openParen)
+        /*
+        var nextParen int = strings.Index(exp[openParen+1:], "(") + openParen + 1
         var closeParen int = strings.Index(exp, ")")
         for nextParen < closeParen && nextParen != -1 {
             openParen = nextParen
             nextParen = strings.Index(exp[openParen+1:], "(")
         }
         var parens string = exp[openParen:closeParen+1]
+        */
         if openParen != 0 && strings.Index(numbers, exp[openParen-1:openParen]) != -1 {
             exp = exp[0:openParen] + "*" + exp[openParen:]
             openParen++
             closeParen++
         }
-        if (closeParen != len(exp)-1 && strings.Index(numbers, exp[closeParen+1:closeParen+2]) != -1) {
-            exp = exp[0:closeParen+1] + "*" + exp[closeParen+1:]
+        if (closeParen != len(exp)-1 && strings.Contains(numbers, exp[closeParen+1:closeParen+2])) {
+            exp = exp[:closeParen+1] + "*" + exp[closeParen+1:]
         }
-        var inParens string = parens[1:len(parens)-1]
-        exp = exp[0:openParen] + Pemdas(inParens) + exp[closeParen + 1:]
+        inParens := exp[openParen + 1:closeParen]
+        exp = exp[:openParen] + Pemdas(inParens) + exp[closeParen + 1:]
     }
     return exp
 }
@@ -341,15 +343,20 @@ func FindClosingBracket(exp string, open int) int {
 
 //main expression evaluation function, runs operations in order.
 func Pemdas(exp string) string {
-    exp = strings.Replace(exp, " ",  "", 1)
+    exp = strings.Replace(exp, " ",  "", -1)
     exp = EvaluateFuncs(exp)
+    //fmt.Printf("after funcs %s\n", exp)
     exp = EvaluateParens(exp)
+    //fmt.Printf("after parens %s\n", exp)
     exp = PowerLtoR(exp)
+    //fmt.Printf("after powers %s\n", exp)
     exp = MultiplyLtoR(exp)
+    //fmt.Printf("after multiply %s\n", exp)
     if (strings.Index(exp, "Infinity") != -1) {
         return "Infinity"
     }
     exp = AddLtoR(exp)
+    //fmt.Printf("after add %s\n", exp)
     return exp
 }
 
@@ -371,6 +378,7 @@ func SubSides(eq string) int {
     var rhs string = eq[equalsIndex + 1:]
     var side1 float64 = NotateToDouble(Pemdas(lhs))
     var side2 float64 = NotateToDouble(Pemdas(rhs))
+    //fmt.Printf("rhs %s = %f\n", rhs, side2)
     if side1 > side2 {
         return -1
     } else if (side1 < side2) {
@@ -382,7 +390,7 @@ func SubSides(eq string) int {
 
 //substitutes a given variable for a given float64 value.
 func Sub(exp string, variable string, val float64) string {
-    exp = strings.Replace(exp, variable,  "(" + NegativeNotate(fmt.Sprintf("%f", val)) + ")", 1)
+    exp = strings.Replace(exp, variable,  "(" + NegativeNotate(fmt.Sprintf("%f", val)) + ")", -1)
     return exp
 }
 
