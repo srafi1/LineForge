@@ -7,12 +7,8 @@ A graphing calculator in the terminal! Input equations and Line Forge will rende
 
 ## Usage
 ```bash
-$ make run
-```
-or
-```bash
-$ GOPATH=$(pwd)
-$ go run main
+$ go get github.com/srafi1/LineForge
+$ go run github.com/srafi1/LineForge
 ```
 
 ## Features
