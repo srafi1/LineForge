@@ -1,4 +1,4 @@
-package keyboard
+package ansi
 
 //All ANSI excae codes to incorporate colors in the terminal
 var RESET string = "\u001B[0m"

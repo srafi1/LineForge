@@ -6,9 +6,9 @@ import (
     "bufio"
     "io"
     "strings"
-    "mathstring"
-    "graph"
-    "keyboard"
+    "github.com/srafi1/LineForge/mathstring"
+    "github.com/srafi1/LineForge/graph"
+    "github.com/srafi1/LineForge/ansi"
 )
 
 func main() {
@@ -127,23 +127,23 @@ func main() {
             for i := 0; i < len(graphs); i++ {
                 switch (i%7) {
                 case 0:
-                    myColor = keyboard.WHITE
+                    myColor = ansi.WHITE
                 case 1:
-                    myColor = keyboard.RED
+                    myColor = ansi.RED
                 case 2:
-                    myColor = keyboard.GREEN
+                    myColor = ansi.GREEN
                 case 3:
-                    myColor = keyboard.YELLOW
+                    myColor = ansi.YELLOW
                 case 4:
-                    myColor = keyboard.BLUE
+                    myColor = ansi.BLUE
                 case 5:
-                    myColor = keyboard.PURPLE
+                    myColor = ansi.PURPLE
                 case 6:
-                    myColor = keyboard.CYAN
+                    myColor = ansi.CYAN
                 }
                 fmt.Print(myColor)
                 fmt.Print(graphs[i])
-                fmt.Println(keyboard.RESET)
+                fmt.Println(ansi.RESET)
             }
             fmt.Printf("Zoom level: %f\n", highVal)
             fmt.Printf("Total translations: %f %f\n", totaldx, totaldy)

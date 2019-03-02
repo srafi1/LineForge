@@ -1,7 +1,8 @@
-GOPATH=$(CURDIR)
-
 build:
-	go build main
+	go build
+
+install:
+	go install
 
 run:
-	go run main
+	go run .

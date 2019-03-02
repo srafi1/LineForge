@@ -2,8 +2,8 @@ package graph
 
 import (
     "strings"
-    "keyboard"
-    "mathstring"
+    "github.com/srafi1/LineForge/ansi"
+    "github.com/srafi1/LineForge/mathstring"
 )
 
 type Point struct {
@@ -20,13 +20,13 @@ func (p *Point) New() {
 
 //toString prints myString with whatever color the point is.
 func (p *Point) String() string {
-    return p.myColor + p.myString + keyboard.RESET
+    return p.myColor + p.myString + ansi.RESET
 }
 
 //makes myString blank
 func (p *Point) reset() {
     p.myString = " "
-    p.myColor = keyboard.WHITE
+    p.myColor = ansi.WHITE
 }
 
 //this version of checkAxis does a "close enough" to axis sorta thing
@@ -57,25 +57,25 @@ func (p *Point) setColor(graphNum int) {
 
     switch graphNum {
     case 0:
-        p.myColor = keyboard.WHITE
+        p.myColor = ansi.WHITE
         break
     case 1:
-        p.myColor = keyboard.RED
+        p.myColor = ansi.RED
         break
     case 2:
-        p.myColor = keyboard.GREEN
+        p.myColor = ansi.GREEN
         break
     case 3:
-        p.myColor = keyboard.YELLOW
+        p.myColor = ansi.YELLOW
         break
     case 4:
-        p.myColor = keyboard.BLUE
+        p.myColor = ansi.BLUE
         break
     case 5:
-        p.myColor = keyboard.PURPLE
+        p.myColor = ansi.PURPLE
         break
     case 6:
-        p.myColor = keyboard.CYAN
+        p.myColor = ansi.CYAN
         break
     }
 }
