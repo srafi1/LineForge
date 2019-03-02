@@ -6,9 +6,20 @@ A graphing calculator in the terminal! Input equations and Line Forge will rende
 ![Screenshot](https://raw.githubusercontent.com/srafi1/LineForge/master/screenshots/screenshot1.png)
 
 ## Usage
+Using go tools:
 ```bash
 $ go get github.com/srafi1/LineForge
 $ go run github.com/srafi1/LineForge
+```
+This will clone LineForge to your $GOPATH/src/github.com/srafi1/LineForge directory
+
+Manually:
+```bash
+$ mkdir -p $GOPATH/src/github.com/srafi1/
+$ cd $GOPATH/src/github.com/srafi1
+$ git clone https://github.com/srafi1/LineForge
+$ cd LineForge
+$ go run .
 ```
 
 ## Features
