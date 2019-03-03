@@ -106,7 +106,7 @@ func main() {
             totaldx += dx
             totaldy += dy
 
-            fmt.Printf("%v", graph)
+            fmt.Printf("%v", graph.String())
             fmt.Println("Use 'status' to see the equations, zoom level, and translations")
         } else if graphMode && strings.Index(input, "debug") == 0 {
             var x, y int
@@ -119,7 +119,7 @@ func main() {
             totaldx = 0
             totaldy = 0
             highVal = 10
-            fmt.Printf("%s", graph.String())
+            fmt.Println("Zoom level and translations were reset!")
         } else if input == "status" {
             fmt.Println("Equations: ")
             graphs := graph.Graphs
