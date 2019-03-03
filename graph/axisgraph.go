@@ -2,6 +2,7 @@ package graph
 
 import (
     "strings"
+    "sync"
 )
 
 type AxisGraph struct {
@@ -60,12 +61,18 @@ func (graph *AxisGraph) Translate(dx float64, dy float64) {
 
 //runa closeEnough on all the Points, forming a graph
 func (graph *AxisGraph) Graph(eq string, num int) {
+    var wg sync.WaitGroup
     increment :=  graph.highest / float64((len(graph.Plane) - 1) / 2)
     for i, _ := range graph.Plane {
         for j, _ := range graph.Plane[i] {
-            graph.Plane[i][j].CloseEnoughColor(eq, increment / 2.0, num)
+            wg.Add(1)
+            go func(x int, y int) {
+                graph.Plane[x][y].CloseEnoughColor(eq, increment / 2.0, num)
+                wg.Done()
+            }(i, j)
         }
     }
+    wg.Wait()
 }
 
 func (graph *AxisGraph) GraphAll() {
