@@ -82,7 +82,8 @@ func main() {
             fmt.Println(helpText)
         } else if graphMode && strings.Index(input, "zoom") == 0 {
             //zoom
-            var scale float64 = mathstring.NotateToDouble(input[5:])
+            var scale float64
+            fmt.Sscanf(input, "zoom %f", &scale)
             if scale > 0 {
                 graph.Zoom(scale)
                 graph.Translate(totaldx, totaldy)
@@ -108,10 +109,6 @@ func main() {
 
             fmt.Printf("%v", graph.String())
             fmt.Println("Use 'status' to see the equations, zoom level, and translations")
-        } else if graphMode && strings.Index(input, "debug") == 0 {
-            var x, y int
-            fmt.Sscan(input, "debug %i %i", &x, &y)
-            fmt.Printf("'%v'\n", graph.Plane[y][x].String())
         } else if graphMode && strings.Index(input, "reset") == 0 {
             graph.Translate(-1*totaldx, -1*totaldy)
             graph.Zoom(10)
